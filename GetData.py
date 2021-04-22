@@ -17,7 +17,7 @@ sf.set_api_key('free')
 sf.set_data_dir('~/simfin_data/')
 
 # NOMBRE EN LA BOLSA
-company = 'AAPL'
+company = 'MELI'
 
 # Download the data from the SimFin server and load into a Pandas DataFrame.
 # annual/quarterly/ttm
@@ -25,19 +25,9 @@ BALANCE = sf.load_balance(variant='annual', market='us').loc[company, ]
 CASH_FLOW = sf.load_cashflow(variant='annual', market='us').loc[company, ]
 INCOME = sf.load_income(variant='annual', market='us').loc[company, ]
 
-# Print the first rows of the data.
-#print(CASH_FLOW.columns)
-#MMM = df.loc['MMM', ]
-#MMM = pd.DataFrame(MMM)
-#del df
+directory = fr"C:\Users\juan_\Dropbox\Mi PC (LAPTOP-H9MAOJRB)\Desktop\Valuation\US_Stocks\Data\{company}"
 
-#directory = 'C:\Users\juan_\Dropbox\Mi PC (LAPTOP-H9MAOJRB)\Desktop\Valuation\US_Stocks\Data\{company}'
-
-
-# create excel writer object
-writer = pd.ExcelWriter(r'C:\Users\juan_\Dropbox\Mi PC (LAPTOP-H9MAOJRB)\Desktop\Valuation\US_Stocks\Data\APPLE\DATA.xls')
-
-#writer = pd.ExcelWriter(r'directory\DATA.xls')
+writer = pd.ExcelWriter(fr'{directory}\DATA.xls')
 
 # write dataframe to excel
 BALANCE.to_excel(writer, sheet_name='Balance')
