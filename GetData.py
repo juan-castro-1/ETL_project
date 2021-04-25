@@ -43,7 +43,7 @@ print('DATA was written successfully to Excel File.')
 df_CF = pd.read_excel(writer, sheet_name='Cash_Flow')
 df_BAL = pd.read_excel(writer, sheet_name='Balance')
 df_INC = pd.read_excel(writer, sheet_name='Income')
-df_PRICE = pd.read_excel(writer, sheet_name='Price')
+#df_PRICE = pd.read_excel(writer, sheet_name='Price')
 
 
 # Profit & Loss
@@ -54,6 +54,12 @@ PL['gross_profit'] = df_INC['Gross Profit']
 PL['operating_income'] = df_INC['Operating Income (Loss)']
 PL['EBITDA'] = df_INC['Operating Income (Loss)'] + df_CF['Depreciation & Amortization']
 PL['net_profit'] = df_INC['Net Income (Common)']
+PL['gross_margin'] = df_INC['Gross Profit'] / df_INC['Revenue']
+PL['operating_margin'] = df_INC['Operating Income (Loss)'] / df_INC['Revenue']
+PL['net_profit_margin'] = df_INC['Net Income'] / df_INC['Revenue']
+PL['ROE'] = df_INC['Net Income (Common)'] / df_BAL['Total Equity']
+PL['ROA'] = df_INC['Net Income (Common)'] / df_BAL['Total Assets']
+
 
 
 # balance sheet
@@ -87,13 +93,6 @@ Cflows['FCFF'] = df_CF['Net Income/Starting Line'] + df_CF['Change in Working Ca
 
 
 # profit ratios
-Profit_ratios = pd.DataFrame()
-Profit_ratios['gross_margin'] = df_INC['Gross Profit'] / df_INC['Revenue']
-Profit_ratios['operating_margin'] = df_INC['Operating Income (Loss)'] / df_INC['Revenue']
-Profit_ratios['net_profit_margin'] = df_INC['Net Income'] / df_INC['Revenue']
-Profit_ratios['ROE'] = df_INC['Net Income (Common)'] / df_BAL['Total Equity']
-Profit_ratios['ROA'] = df_INC['Net Income (Common)'] / df_BAL['Total Assets']
-
 
 
 # growth rate
@@ -104,19 +103,26 @@ Profit_ratios['ROA'] = df_INC['Net Income (Common)'] / df_BAL['Total Assets']
 #METRICS['retention_ratio'] = (df_CF['Net Income/Starting Line'] + df_CF['Dividends Paid']) / df_CF['Net Income/Starting Line']
 
 
-writer_METRICS = pd.ExcelWriter(fr'{directory}\METRICS.xls')
-PL.to_excel(writer_METRICS, sheet_name='Profit & Loss')
-BSheet.to_excel(writer_METRICS, sheet_name='Balance Sheet')
-Cflows.to_excel(writer_METRICS, sheet_name='Cash Flows')
-
-writer_METRICS.save()
-print('METRICS were written successfully to Excel File.')
-
+#writer_METRICS = pd.ExcelWriter(fr'{directory}\METRICS.xls')
+#PL.to_excel(writer_METRICS, sheet_name='Profit & Loss')
+#BSheet.to_excel(writer_METRICS, sheet_name='Balance Sheet')
+#Cflows.to_excel(writer_METRICS, sheet_name='Cash Flows')
+#writer_METRICS.save()
+#print('METRICS were written successfully to Excel File.')
 
 
 
 
+writer_json = fr'{directory}\PL.json'
+PL.to_json(writer_json, orient='records')
 
+print('METRICS were written successfully to Json File.')
+
+
+
+'''
+HACER UN JSON POR CADA METRICS
+'''
 
 
 
