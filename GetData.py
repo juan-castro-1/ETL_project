@@ -95,34 +95,26 @@ Cflows['FCFF'] = df_CF['Net Income/Starting Line'] + df_CF['Change in Working Ca
 # profit ratios
 
 
-# growth rate
-#METRICS = pd.DataFrame()
-#METRICS['growth_1'] = METRICS['reinvestment_rate']*METRICS['ROE']
-#METRICS['growth_2'] = METRICS['retention_ratio']*METRICS['ROE']
-#METRICS['reinvestment_rate'] =  -( df_CF['Change in Working Capital' ] + df_CF['Change in Fixed Assets & Intangibles' ] ) / df_CF['Net Cash from Operating Activities']
-#METRICS['retention_ratio'] = (df_CF['Net Income/Starting Line'] + df_CF['Dividends Paid']) / df_CF['Net Income/Starting Line']
+# rates
+rates = pd.DataFrame()
+#rates['growth_1'] = METRICS['reinvestment_rate']*METRICS['ROE']
+#rates['growth_2'] = METRICS['retention_ratio']*METRICS['ROE']
+#rates['reinvestment_rate'] =  -( df_CF['Change in Working Capital' ] + df_CF['Change in Fixed Assets & Intangibles' ] ) / df_CF['Net Cash from Operating Activities']
+#rates['retention_ratio'] = (df_CF['Net Income/Starting Line'] + df_CF['Dividends Paid']) / df_CF['Net Income/Starting Line']
 
 
-#writer_METRICS = pd.ExcelWriter(fr'{directory}\METRICS.xls')
-#PL.to_excel(writer_METRICS, sheet_name='Profit & Loss')
-#BSheet.to_excel(writer_METRICS, sheet_name='Balance Sheet')
-#Cflows.to_excel(writer_METRICS, sheet_name='Cash Flows')
-#writer_METRICS.save()
-#print('METRICS were written successfully to Excel File.')
-
-
-
-
-writer_json = fr'{directory}\PL.json'
-PL.to_json(writer_json, orient='records')
-
-print('METRICS were written successfully to Json File.')
+writer_METRICS = pd.ExcelWriter(fr'{directory}\METRICS.xls')
+PL.to_excel(writer_METRICS, sheet_name='Profit & Loss')
+BSheet.to_excel(writer_METRICS, sheet_name='Balance Sheet')
+Cflows.to_excel(writer_METRICS, sheet_name='Cash Flows')
+writer_METRICS.save()
+print('METRICS were written successfully to Excel File.')
 
 
 
-'''
-HACER UN JSON POR CADA METRICS
-'''
+
+
+
 
 
 
