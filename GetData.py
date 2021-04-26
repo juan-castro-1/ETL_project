@@ -17,7 +17,7 @@ sf.set_api_key('free')
 sf.set_data_dir('~/simfin_data/')
 
 # NOMBRE EN LA BOLSA
-company = 'MELI'
+company = 'AMZN'
 
 # Download the data from the SimFin server and load into a Pandas DataFrame.
 # annual/quarterly/ttm
