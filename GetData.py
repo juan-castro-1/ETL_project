@@ -7,6 +7,7 @@ Created on Thu Apr 22 11:36:02 2021
 
 import simfin as sf
 import pandas as pd
+import yfinance as yf
 
 # Set your API-key for downloading data. This key gets the free data.
 sf.set_api_key('free')
@@ -17,15 +18,32 @@ sf.set_api_key('free')
 sf.set_data_dir('~/simfin_data/')
 
 # NOMBRE EN LA BOLSA
-company = 'AMZN'
+company = 'MMM'
 
 # Download the data from the SimFin server and load into a Pandas DataFrame.
 # annual/quarterly/ttm
 BALANCE = sf.load_balance(variant='annual', market='us').loc[company, ]
 CASH_FLOW = sf.load_cashflow(variant='annual', market='us').loc[company, ]
 INCOME = sf.load_income(variant='annual', market='us').loc[company, ]
-PRICE = sf.load_shareprices(variant='daily', market='us').loc[company, ]
+#PRICE = sf.load_shareprices(variant='daily', market='us').loc[company, ]
+PRICE = yf.download(tickers=f'{company}',
+                    period='10y',
+                    interval='1mo'
+                    )
+PRICE.reset_index(inplace=True)
+PRICE = PRICE[PRICE['Date'].dt.month == 12][['Close','Date']]
 
+
+INCOME['Date'] = INCOME.index.strftime('%m-%Y')
+BALANCE['Date'] = BALANCE.index.strftime('%m-%Y')
+CASH_FLOW['Date'] = CASH_FLOW.index.strftime('%m-%Y')
+PRICE['Date'] = PRICE['Date'].dt.strftime('%m-%Y')
+
+PRICE = PRICE.set_index('Date')
+INCOME = INCOME.set_index('Date')
+BALANCE = BALANCE.set_index('Date')
+CASH_FLOW = CASH_FLOW.set_index('Date')
+       
 directory = fr"C:\Users\juan_\Dropbox\Mi PC (LAPTOP-H9MAOJRB)\Desktop\Valuation\US_Stocks\Data\{company}"
 
 writer = pd.ExcelWriter(fr'{directory}\DATA.xls')
@@ -59,6 +77,7 @@ PL['operating_margin'] = df_INC['Operating Income (Loss)'] / df_INC['Revenue']
 PL['net_profit_margin'] = df_INC['Net Income'] / df_INC['Revenue']
 PL['ROE'] = df_INC['Net Income (Common)'] / df_BAL['Total Equity']
 PL['ROA'] = df_INC['Net Income (Common)'] / df_BAL['Total Assets']
+PL.index = INCOME.index
 
 
 
@@ -76,6 +95,7 @@ BSheet['total_cts_liabilities'] = df_BAL['Total Current Liabilities']
 BSheet['long_debt'] = df_BAL['Long Term Debt']
 BSheet['total_liabilities'] = df_BAL['Total Liabilities']
 BSheet['total_equity'] = df_BAL['Total Equity']
+BSheet.index = BALANCE.index
 
 
 # cash flow
@@ -85,14 +105,24 @@ Cflows['operating_cash_flow'] = df_CF['Net Cash from Operating Activities']
 Cflows['investing_cash_flow'] = df_CF['Net Cash from Investing Activities']
 Cflows['financing_cash_flow'] = df_CF['Net Cash from Financing Activities']
 Cflows['working_capital'] = df_CF['Change in Working Capital']
-Cflows['PP&E'] = df_CF['Change in Fixed Assets & Intangibles']
+Cflows['capital_expences'] = df_CF['Change in Fixed Assets & Intangibles']
 Cflows['dividends'] = df_CF['Dividends Paid']
 Cflows['change_cash'] = df_CF['Net Change in Cash']
 Cflows['FCF'] = df_INC['Operating Income (Loss)'] + df_CF['Depreciation & Amortization' ] + df_CF['Change in Fixed Assets & Intangibles' ] + df_CF['Change in Working Capital' ] + df_INC['Income Tax (Expense) Benefit, Net']
 Cflows['FCFF'] = df_CF['Net Income/Starting Line'] + df_CF['Change in Working Capital' ] + df_CF['Change in Fixed Assets & Intangibles' ]
+Cflows.index = CASH_FLOW.index
 
 
-# profit ratios
+# price ratios
+Pratios = pd.DataFrame()
+Pratios['PE'] = PRICE['Close'] 
+Pratios['PE'] = Pratios['PE'].div(INCOME['Net Income (Common)'] / INCOME['Shares (Basic)'])
+Pratios['PS'] = PRICE['Close']
+Pratios['PS'] = Pratios['PS'].div(INCOME['Revenue'] / INCOME['Shares (Basic)'])
+Pratios['Pbook'] = PRICE['Close']
+Pratios['Pbook'] = Pratios['Pbook'].div(BALANCE['Total Equity'] / INCOME['Shares (Basic)'])
+Pratios['PFCF'] = PRICE['Close']
+Pratios['PFCF'] = Pratios['PFCF'].div(Cflows['FCF'] / INCOME['Shares (Basic)'])
 
 
 # rates
@@ -103,17 +133,16 @@ rates = pd.DataFrame()
 #rates['retention_ratio'] = (df_CF['Net Income/Starting Line'] + df_CF['Dividends Paid']) / df_CF['Net Income/Starting Line']
 
 
+
+
 writer_METRICS = pd.ExcelWriter(fr'{directory}\METRICS.xls')
 PL.to_excel(writer_METRICS, sheet_name='Profit & Loss')
 BSheet.to_excel(writer_METRICS, sheet_name='Balance Sheet')
 Cflows.to_excel(writer_METRICS, sheet_name='Cash Flows')
+Pratios.to_excel(writer_METRICS, sheet_name='P Ratios')
+
 writer_METRICS.save()
 print('METRICS were written successfully to Excel File.')
-
-
-
-
-
 
 
 
