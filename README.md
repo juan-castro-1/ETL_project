@@ -1,4 +1,4 @@
-# US Stocks Data & Metrics
+# ETL stocks project
 
 ## Data
 Data comes from SimFin awesome API: https://simfin.com/
