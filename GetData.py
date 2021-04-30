@@ -18,7 +18,7 @@ sf.set_api_key('free')
 sf.set_data_dir('~/simfin_data/')
 
 # NOMBRE EN LA BOLSA
-company = 'AMZN'
+company = 'AAPL'
 
 # Download the data from the SimFin server and load into a Pandas DataFrame.
 # annual/quarterly/ttm
@@ -46,7 +46,7 @@ CASH_FLOW = CASH_FLOW.set_index('Date')
        
 directory = fr"C:\Users\juan_\Dropbox\Mi PC (LAPTOP-H9MAOJRB)\Desktop\Valuation\US_Stocks\Data\{company}"
 
-writer = pd.ExcelWriter(fr'{directory}\DATA.xls')
+writer = pd.ExcelWriter(fr'{directory}\DATA.xlsx')
 
 # write dataframe to excel
 BALANCE.to_excel(writer, sheet_name='Balance')
@@ -215,8 +215,6 @@ other.to_excel(writer_METRICS, sheet_name='Others')
 
 writer_METRICS.save()
 print('METRICS were written successfully to Excel File.')
-
-PL.to_json(fr'{directory}\File Name.json')
 
 
 

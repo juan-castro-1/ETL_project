@@ -1,3 +1,4 @@
 # ignorar archivos .xls + .pbix#
 *.xls
+*.xlsx
 *.pbix
